@@ -50,7 +50,7 @@
       <lesson-component v-if="!showCart" :classes="classes" @add-class-to-cart="handleAddToCart"></lesson-component>
    
     </div>
-    <checkout-component v-if="showCart" @back-to-lessons="handleBackToLessons" :cartItems="cart" @remove-from-cart="handleRemoveFromCart" @order-submitted="resetCart"></checkout-component>
+    <checkout-component v-if="showCart" @back-to-lessons="handleBackToLessons"  @viewLessons="showCart = false" :cartItems="cart" @reduce-space="handleReduceSpace" @order-submitted="resetCart"></checkout-component>
    </div>
 </template>
 
@@ -130,21 +130,25 @@ export default {
     toggleCart() {
       this.showCart = !this.showCart;
     },
-    handleRemoveFromCart(itemToRemove) {
-      // Find the index of the item to remove in the cart array
-      const index = this.cart.findIndex(cartItem => cartItem.title === itemToRemove.title);
+    // App.vue
+handleReduceSpace(item) {
+  const cartIndex = this.cart.findIndex(cartItem => cartItem.title === item.title);
+  if (cartIndex !== -1) {
+    if (this.cart[cartIndex].purchasedSpaces > 1) {
+      this.cart[cartIndex].purchasedSpaces -= 1;
+    } else {
+      // Remove if last space
+      this.cart.splice(cartIndex, 1);
+    }
+  }
+  
+  // Optionally increment back in classes array if you're tracking available spaces
+  const classIndex = this.classes.findIndex(c => c.title === item.title);
+  if (classIndex !== -1 && this.classes[classIndex].availableSpaces < 5) {
+    this.classes[classIndex].availableSpaces += 1;
+  }
+},
 
-      if (index !== -1) {
-        // Remove the item from the cart array
-        this.cart.splice(index, 1);
-
-        const classIndex = this.classes.findIndex(classItem => classItem.title === itemToRemove.title);
-        if (classIndex !== -1) {
-          this.classes[classIndex].availableSpaces += itemToRemove.purchasedSpaces;
-        }
-
-      }
-    },
     resetCart() {
             this.cart = [];
         },
@@ -184,27 +188,27 @@ export default {
     // Inside your parent component's script
 
     handleAddToCart(classItem) {
-      // Find the item in the cart
-      const cartItem = this.cart.find(item => item.title === classItem.title);
-      if (cartItem) {
-        // Item exists in the cart, increase quantity
-        cartItem.purchasedSpaces += 1;
-      } else {
-        // Add new item to the cart
-        this.cart.push({ ...classItem, purchasedSpaces: 1 });
-      }
+  const cartItem = this.cart.find(item => item.title === classItem.title);
+  if (cartItem) {
+    // Only increase if under cap
+    if (cartItem.purchasedSpaces < 5) {
+      cartItem.purchasedSpaces += 1;
+    } else {
+      alert("You've reached the maximum number of spaces for this class.");
+    }
+  } else {
+    // Initialize with 1 space if not in cart
+    this.cart.push({ ...classItem, purchasedSpaces: 1 });
+  }
+  
+  // Deduct from available spaces if not already at cap
+  const classIndex = this.classes.findIndex(c => c.title === classItem.title);
+  if (classIndex !== -1 && this.classes[classIndex].availableSpaces > 0) {
+    this.classes[classIndex].availableSpaces -= 1;
+  }
+},
 
-      // Optionally, decrease availableSpaces of the class
-      const classIndex = this.classes.findIndex(c => c.title === classItem.title);
-      if (classIndex !== -1) {
-        this.classes[classIndex].availableSpaces -= 1;
-      }
-    },
-
-    handleBackToLessons() {
-    this.showCart = false; // Hide the cart
-    this.viewActivities = true; // Show the lessons component (if you're using this or a similar variable to toggle its visibility)
-  },
+// 
 
 
     addToCart(item) {
@@ -261,11 +265,6 @@ export default {
     // Sets the sorting order for displaying the classes
     setOrder(order) {
       this.sortOrder = order;
-    },
-
-    // Switches the view to display the activities list, hiding the cart view
-    goToActivities() {
-      this.viewActivities = true;
     },
 
     // Submits the order to the backend and updates the classes' available spaces
@@ -357,8 +356,7 @@ export default {
       } catch (error) {
         console.error("Error updating class space:", error);
       }
-      // hbdhvbjhiehsrjikjjbb wkbiebbkken ceijdk elwn n jbbnihrejejbrknsb
-      // retjes tred yka frfdcvnv ksd
+
     },
 
     // Updates the local class data with the new data from the server
@@ -390,6 +388,8 @@ export default {
         console.error("Error performing search:", error);
       }
     },
+
+
 
     // Updates the class space based on the number of spaces purchased
     async updateClassSpace(classId, purchasedSpaces) {

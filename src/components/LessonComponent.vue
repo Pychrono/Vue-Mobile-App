@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="row col-9">
+    <div class="row">
       <div
         v-for="item in filteredItems"
         id="searchResults"
         :key="item.title"
-        class="card first col-3 p-2"
+        class="card first col-lg-3 col-5 p-2"
         style="background-color: #9aa4ab"
       >
         <img :src="item.image" alt="Activity Image" class="card-img-top" />

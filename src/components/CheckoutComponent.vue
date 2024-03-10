@@ -1,16 +1,16 @@
 <template>
     <div>
         <!-- Cart view -->
-        <div class="" >
+        <div class="">
             <h3 class="text-center">Cart</h3>
             <!-- Display message if cart is empty -->
             <div v-if="cartItems.length === 0" class="text-center mt-3">
-                <button class="btn btn-primary" @click="$emit('back-to-lessons')">Go Back to Activities</button>
+                <button class="btn btn-primary" @click="goToActivities">Go Back to Activities</button>
             </div>
             <!-- Displaying items in the cart -->
             <div v-else class="p-3 row">
-                <div class=" col-9">
-                    <div v-for="item in cartItems" :key="item.title" class="card-body first col-4 p-3"
+                <div class=" col-lg-9 col-sm-12">
+                    <div v-for="item in cartItems" :key="item.title" class="card-body first col-lg-4 col-5 p-3"
                         style="display: inline-block;">
                         <!-- Cart item details -->
                         <img :src="item.image" alt="Activity Image" class="card-img-top" />
@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <!-- Checkout form -->
-                <div class="col-3">
+                <div class="col-lg-3 col-12">
                     <div>
                         <h4>Checkout</h4>
                         <form @submit.prevent="submitOrder">
@@ -122,12 +122,12 @@ export default {
                 console.error('Error submitting order:', error);
             }
         },
-        // Removes an item from the cart
-        removeFromCart(item) {
-            this.$emit('remove-from-cart', item);
-        },
+
         goToActivities() {
-            this.$emit('hide-cart');
+            this.$emit('viewLessons');
+        },
+        removeFromCart(item) {
+            this.$emit('reduce-space', item);
         },
 
     }
