@@ -1,0 +1,19 @@
+{
+    "short_name": "VueApp",
+    "name": "Eduventure",
+    "icons": [{
+            "src": "icons/Eduventure_Full_Logo.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Logo-1080x675.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "http://192.168.1.211:8080",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#4DBA87"
+}
