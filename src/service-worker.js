@@ -1,36 +1,43 @@
 // Define a cache name
-const CACHE_NAME = 'v1_cache';
+var cacheName = 'v1_cache';
 // Specify the files you want to cache
-const urlsToCache = [
-    '/',
-    '/index.html',
-    '/js/app.b4670569.js', // Update with actual hashed filename
-    '/css/app.6015f54c.css', // Update with actual hashed filename
-    'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
-    '/img/icons/Logo-1080x675.png',
-];
+var cacheFiles ={
+"../public/index.html",
+"../public/img/icons/icon.webp"
+"../public/img/icons/icon2.webp"
+};
+
+self.addEventListener("install", function(e) {
+console.log("[Service Worker] Install");
+e.waitUntil(
+caches.open(cacheName).then(function(cache){
+console.log("[Service Worker] Caching files");
+return cache.addAll(cacheFiles);
+})
+);
+});
 
 // Install event - caches specified files
-self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-        .then(cache => {
-            console.log('Opened cache');
-            return cache.addAll(urlsToCache);
-        })
-    );
-});
-
-// Fetch event to serve cached content
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-        .then(response => {
-            // Cache hit - return response
-            if (response) {
-                return response;
-            }
-            return fetch(event.request);
-        })
-    );
-});
+//self.addEventListener('install', event => {
+//    event.waitUntil(
+//        caches.open(CACHE_NAME)
+//        .then(cache => {
+//            console.log('Opened cache');
+//            return cache.addAll(cachefiles);
+//        })
+//    );
+//});
+//
+//// Fetch event to serve cached content
+//self.addEventListener('fetch', event => {
+//    event.respondWith(
+//        caches.match(event.request)
+//        .then(response => {
+//            // Cache hit - return response
+//            if (response) {
+//                return response;
+//            }
+//            return fetch(event.request);
+//        })
+//    );
+//});

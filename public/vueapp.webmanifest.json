@@ -1,0 +1,19 @@
+{
+    "short_name": "VueApp",
+    "name": "Eduventure",
+    "icons": [{
+            "src": "img/icons/icon.webp",
+            "sizes": "144x144",
+            "type": "image/webp"
+        },
+        {
+            "src": "img/icons/icon2.webp",
+            "sizes": "512x512",
+            "type": "image/webp"
+        }
+    ],
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#4DBA87"
+}
